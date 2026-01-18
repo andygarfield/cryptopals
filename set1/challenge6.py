@@ -2,8 +2,8 @@ import base64
 from io import StringIO
 from math import inf
 
-min_key_size = 2
-max_key_size = 40
+MIN_KEY_SIZE = 2
+MAX_KEY_SIZE = 40
 
 
 def main():
@@ -18,24 +18,28 @@ def main():
 def find_probably_keysize(encoded: bytes) -> int:
     smallest_distance_keysize = inf
     smallest_normalized_distance = inf
-    for KEYSIZE in range(min_key_size, max_key_size + 1):
+    for key_size in range(MIN_KEY_SIZE, MAX_KEY_SIZE + 1):
         distance1 = (
-            compute_hamming_distance(encoded[KEYSIZE * 0 : KEYSIZE * 1], encoded[KEYSIZE * 1 : KEYSIZE * 2]) / KEYSIZE
+            compute_hamming_distance(encoded[key_size * 0 : key_size * 1], encoded[key_size * 1 : key_size * 2])
+            / key_size
         )
         distance2 = (
-            compute_hamming_distance(encoded[KEYSIZE * 2 : KEYSIZE * 3], encoded[KEYSIZE * 3 : KEYSIZE * 4]) / KEYSIZE
+            compute_hamming_distance(encoded[key_size * 2 : key_size * 3], encoded[key_size * 3 : key_size * 4])
+            / key_size
         )
         distance3 = (
-            compute_hamming_distance(encoded[KEYSIZE * 4 : KEYSIZE * 5], encoded[KEYSIZE * 5 : KEYSIZE * 6]) / KEYSIZE
+            compute_hamming_distance(encoded[key_size * 4 : key_size * 5], encoded[key_size * 5 : key_size * 6])
+            / key_size
         )
         distance4 = (
-            compute_hamming_distance(encoded[KEYSIZE * 6 : KEYSIZE * 7], encoded[KEYSIZE * 7 : KEYSIZE * 8]) / KEYSIZE
+            compute_hamming_distance(encoded[key_size * 6 : key_size * 7], encoded[key_size * 7 : key_size * 8])
+            / key_size
         )
         normalized_distance = sum([distance1, distance2, distance3, distance4]) / 4
 
         # normalized_distance = distance / KEYSIZE
         if normalized_distance < smallest_normalized_distance:
-            smallest_distance_keysize = KEYSIZE
+            smallest_distance_keysize = key_size
             smallest_normalized_distance = normalized_distance
 
     return int(smallest_distance_keysize)
